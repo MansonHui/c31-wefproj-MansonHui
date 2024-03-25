@@ -1,0 +1,75 @@
+
+.style{
+    display: flex;
+    justify-content: space-between;
+    margin: 5px;
+}
+/* #start, #stop, #restart{
+    background-color: beige;
+    margin: 5px;
+} */
+#sliderTitle, #colorPickerTitle{
+    font-size: large;
+    text-align: center;
+    color: #4e09f0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+#colorPickerContainer, #sliderContainer{
+    display: flex;
+    flex-direction: column;
+    align-items:center ;
+    margin: 5px;
+    justify-content: flex-start;
+    margin: 0;
+}
+
+
+body {
+    background-image: url("WEF008.jpg");
+    background-color: #cccccc;
+   }
+
+#canvas{
+    opacity:0.75;
+    margin: 10px 50px 10px 50px;
+}
+
+#startStopContainer{
+    flex-direction: row;
+    flex-wrap: nowrap;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+
+}
+#startStopContainer button{
+    margin: 5px;
+    color: #1d9bd6;
+    border-radius: 5px;
+    font-size: large;
+    
+}
+
+#modeSelectorContainer button{
+    margin: 5px;
+    color: #1d9bd6;
+    border-radius: 5px;
+    font-size: large;
+}
+
+#pattern button{
+    margin: 5px;
+    color: #1d9bd6;
+    border-radius: 5px;
+    font-size: large;
+
+}
+
+#title{
+    display: flex;
+    justify-content: center;
+    font-size:30px;
+    color:#1d9bd6;
+}
