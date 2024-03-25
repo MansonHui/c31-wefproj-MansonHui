@@ -10,7 +10,7 @@ let maxNumLoneliness = 2;
 let maxNumOverpopulation = 3;
 let maxNumReproduction = 3;
 let myPicker;
-let bg;
+let bg=123;
 
 let currentPlayer;
 let chosenPlayer;
