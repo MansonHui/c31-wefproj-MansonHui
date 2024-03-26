@@ -159,6 +159,7 @@ function mouseDragged() {
   } else {
     fill(myPicker.value());
   }
+
   stroke(strokeColor);
   rect(x * unitLength, y * unitLength, unitLength, unitLength);
 }
@@ -273,7 +274,42 @@ function randomPattern() {
     noLoop();
   }
 }
+function transfromStringtoArray() {
+  const Quasar = `.OO..OO.
+...OO...
+...OO...
+O.O..O.O
+O......O
+........
+O......O
+.OO..OO.
+..OOOO..
+........
+...OO...
+...OO...`;
 
+  let patternTransform = Quasar.replace(/\./g, "0");
+  patternTransform = patternTransform.replace(/O/g, "1");
+
+
+
+  let stringsGroup = patternTransform.split("\n");
+  // console.log(stringsGroup)
+  let outterArray = [];
+  for (i = 0; i < stringsGroup.length; i++) {
+    // console.log(stringsGroup[i])
+    let chars = stringsGroup[i].split("");
+    let innerArray = [];
+    for (j = 0; j < chars.length; j++) {
+      innerArray.push(parseInt(chars[j]));
+    }
+    console.log(innerArray);
+    outterArray.push(innerArray);
+  }
+  console.log(outterArray);
+
+  return outterArray;
+}
 function defaultPattern() {
   let defaultPatternButton = createButton(`"Quasar" Pattern`);
 
@@ -282,65 +318,17 @@ function defaultPattern() {
   defaultPatternButton.mousePressed(defaultPatternGenerator);
 
   function defaultPatternGenerator() {
-    function transfromStringtoArray() {
-      const Quasar = `..........OOO...OOO
 
-........O....O.O....O
-........O....O.O....O
-........O....O.O....O
-..........OOO...OOO
-
-........OOO.......OOO
-..OOO..O....O...O....O..OOO
-.......O....O...O....O
-O....O.O....O...O....O.O....O
-O....O.................O....O
-O....O..OOO.......OOO..O....O
-..OOO...................OOO
-
-..OOO...................OOO
-O....O..OOO.......OOO..O....O
-O....O.................O....O
-O....O.O....O...O....O.O....O
-.......O....O...O....O
-..OOO..O....O...O....O..OOO
-........OOO.......OOO
-
-..........OOO...OOO
-........O....O.O....O
-........O....O.O....O
-........O....O.O....O
-
-..........OOO...OOO`;
-
-      let patternTransform = Quasar.replace(/\./g, "0");
-      patternTransform = patternTransform.replace(/O/g, "1");
-
-      console.log(patternTransform);
-
-      let stringsGroup = patternTransform.split("\n");
-      // console.log(stringsGroup)
-      let outterArray = [];
-      for (i = 0; i < stringsGroup.length; i++) {
-        // console.log(stringsGroup[i])
-        let chars = stringsGroup[i].split("");
-        let innerArray = [];
-        for (j = 0; j < chars.length; j++) {
-          innerArray.push(parseInt(chars[j]));
-        }
-        console.log(innerArray);
-        outterArray.push(innerArray);
-      }
-      console.log(outterArray);
-
-      return outterArray;
-    }
 
     const pattern = transfromStringtoArray();
 
-    for (let i = 0; i < pattern.length; i++) {
-      for (let j = 0; j < pattern[i].length; j++) {
-        currentBoard[30 + i][3 + j] = pattern[i][j];
+    let patternXCenter = Math.floor(pattern[0].length / 2)
+    let patternYCenter = Math.floor(pattern.length / 2)
+
+    for (let j = 0; j < pattern.length; j++) {
+      for (let i = 0; i < pattern[j].length; i++) {
+        console.log(i, j, pattern[j][i])
+        currentBoard[Math.floor(columns / 2) + i - patternXCenter][Math.floor(rows / 2) + j - patternYCenter] = pattern[j][i];
         nextBoard[i][j] = 0;
       }
     }
@@ -359,4 +347,37 @@ function redBlueColorSelector() {
   button2.mousePressed(function blueColorSelected() {
     colorIndex = 2;
   });
+}
+
+function mouseMoved() {
+  if (mouseX > unitLength * columns || mouseY > unitLength * rows || mouseX < 0 || mouseY < 0) {
+    return;
+  }
+  const x = Math.floor(mouseX / unitLength);
+  const y = Math.floor(mouseY / unitLength);
+
+  console.log("not out of bound")
+
+
+  const pattern = transfromStringtoArray();
+
+  console.log("pattern", pattern)
+
+  let patternXCenter = Math.floor(pattern[0].length / 2)
+  let patternYCenter = Math.floor(pattern.length / 2)
+
+  redraw()
+  for (let j = 0; j < pattern.length; j++) {
+    for (let i = 0; i < pattern[j].length; i++) {
+      console.log(i, j, pattern[j][i])
+
+      if (pattern[j][i] == 1) {
+
+
+        fill("green");
+        stroke(strokeColor);
+        rect(((x + i - patternXCenter + columns) % columns) * unitLength, ((y + j - patternYCenter + rows) % rows) * unitLength, unitLength, unitLength);
+      }
+    }
+  }
 }
