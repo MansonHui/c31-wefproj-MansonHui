@@ -1,19 +1,19 @@
 const unitLength = 20;
-let boxColor;
 const strokeColor = 50;
 let columns; /* To be determined by window width */
 let rows; /* To be determined by window height */
 let currentBoard;
 let nextBoard;
 let frameRateSlider; /* the variable to store the create Slider function with parameter*/
-let maxNumLoneliness = 2;
-let maxNumOverpopulation = 3;
-let maxNumReproduction = 3;
+let maxNumLoneliness = 2; /*the default parameter for Loneliness*/
+let maxNumOverpopulation = 3; /*the default parameter for Overpopulation*/
+let maxNumReproduction = 3; /*the default parameter for Reproduction*/
 let myPicker;
-let bg=123;
+let colorIndex;
 
-let currentPlayer;
-let chosenPlayer;
+/*code for the function of multiple color on the same bard which is not yet realise*/
+let redColor;
+let blueColor;
 
 function setup() {
   /* Set the canvas to be under the element #canvas*/
@@ -32,11 +32,11 @@ function setup() {
     nextBoard[i] = [];
   }
 
-  // button12();
+  redBlueColorSelector();
 
-  randomPatternButton();
+  randomPattern();
 
-  defaultPatternButton();
+  defaultPattern();
 
   colorPicker();
 
@@ -71,12 +71,22 @@ function draw() {
   generate();
   for (let i = 0; i < columns; i++) {
     for (let j = 0; j < rows; j++) {
-      if (currentBoard[i][j] == 1){
+      if (currentBoard[i][j] == 1) {
         if (nextBoard[i][j] == 1) {
           fill(tinycolor(myPicker.value()).darken(20).toString());
         } else {
           fill(myPicker.value());
         }
+      } else if (
+        currentBoard[i][j] == 1 &&
+        currentBoard[i][j][colorIndex] == 2
+      ) {
+        fill("red");
+      } else if (
+        currentBoard[i][j] == 1 &&
+        currentBoard[i][j][colorIndex] == 3
+      ) {
+        fill("blue");
       } else {
         fill(255, [0.5]);
       }
@@ -138,9 +148,17 @@ function mouseDragged() {
   }
   const x = Math.floor(mouseX / unitLength);
   const y = Math.floor(mouseY / unitLength);
-  currentBoard[x][y] = 1;
-  fill(myPicker.value());
 
+  currentBoard[x][y] = 1;
+  if (colorIndex == 1) {
+    currentBoard[x][y][colorIndex] = 2;
+    fill("red");
+  } else if (colorIndex == 2) {
+    currentBoard[x][y][colorIndex] = 3;
+    fill("blue");
+  } else {
+    fill(myPicker.value());
+  }
   stroke(strokeColor);
   rect(x * unitLength, y * unitLength, unitLength, unitLength);
 }
@@ -181,7 +199,6 @@ function modeSelector() {
 
 function startStop() {
   let startButton;
-
   noLoop();
   startButton = createButton("Start");
   startButton.id("start");
@@ -228,36 +245,24 @@ function restart() {
 }
 
 function colorPicker() {
-  // let p = createP("your selected Colour");
-  // p.id("colorPickerTitle")
-
   myPicker = createColorPicker("pink");
-  // let myColor = myPicker.value();
   myPicker.id("colorPicker");
 
-  // myPicker.changed(()=>{
-  //   console.log("colour changed")
-  //   p.style('color' ,myPicker.value());
-  // })
-
   myPicker.parent("colorPickerContainer");
-  // p.parent("colorPickerContainer");
 }
 
 function windowResized() {
   resizeCanvas(windowWidth - 100, windowHeight - 200);
 }
 
-function randomPatternButton() {
+function randomPattern() {
   let randomPatternButton = createButton("Random Pattern");
-  // let div = createDiv();
-  // div.position(windowWidth-1500 , windowHeight - 200 );
-  // div.id("Pattern");
+
   randomPatternButton.parent("Pattern");
 
-  randomPatternButton.mousePressed(randomPattern);
+  randomPatternButton.mousePressed(randomNumArray);
 
-  function randomPattern() {
+  function randomNumArray() {
     for (let i = 0; i < columns; i++) {
       for (let j = 0; j < rows; j++) {
         currentBoard[i][j] = random() > 0.8 ? 1 : 0;
@@ -269,36 +274,14 @@ function randomPatternButton() {
   }
 }
 
-function defaultPatternButton() {
+function defaultPattern() {
   let defaultPatternButton = createButton(`"Quasar" Pattern`);
 
   defaultPatternButton.parent("Pattern");
 
-  defaultPatternButton.mousePressed(defaultPattern);
+  defaultPatternButton.mousePressed(defaultPatternGenerator);
 
-  function defaultPattern() {
-    // const glider = [
-    //   [0, 0, 1],
-    //   [1, 0, 1],
-    //   [0, 1, 1]
-    // ];
-
-    //   let stringsGroup = pattern.split("\n");
-    //   console.log(stringsGroup)
-    //   let outterArray =[]
-    //     for (i=0; i<stringsGroup.length; i++){
-    //       console.log(stringsGroup[i])
-    //       let chars = stringsGroup[i].split('')
-    //       let innerArray =[]
-    //       for (j=0; j<chars.length; j++){
-    //         innerArray.push(parseInt(chars[j]))
-    //       }
-    //       console.log(innerArray)
-    //       outterArray.push(innerArray)
-    //     }
-    //     console.log(outterArray)
-    // }
-
+  function defaultPatternGenerator() {
     function transfromStringtoArray() {
       const Quasar = `..........OOO...OOO
 
@@ -366,20 +349,14 @@ O....O.O....O...O....O.O....O
   }
 }
 
+function redBlueColorSelector() {
+  let button1 = createButton("redColor");
+  button1.mousePressed(function redColorSelected() {
+    colorIndex = 1;
+  });
 
-function button12(){
-  let button1 = createButton("playerone");
-  button1.mousePressed(
-    function player1(){
-      chosenPlayer = 1;
-    }
-  )
-  
-  let button2 = createButton("playertwo");
-  button2.mousePressed(
-    function player2(){
-      chosenPlayer = 2;
-    }
-  )
-
+  let button2 = createButton("blueColor");
+  button2.mousePressed(function blueColorSelected() {
+    colorIndex = 2;
+  });
 }

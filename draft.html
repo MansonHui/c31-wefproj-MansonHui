@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Game of Life</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+</head>
+<body>
+  <script>
+    // Dimensions of the grid
+    const gridWidth = 50;
+    const gridHeight = 50;
+
+    // Width and height of each cell in pixels
+    const cellSize = 10;
+
+    // Generate a random initial state
+    let initialState = Array.from({ length: gridWidth }, () =>
+      Array.from({ length: gridHeight }, () => Math.round(Math.random()))
+    );
+
+    // Define the colors for representing the cell states
+    const colors = {
+      0: [255, 255, 255],  // Dead cell color (white)
+      1: [[0, 0, 0], [255, 0, 0]]  // Alive cell colors (black and red)
+    };
+
+    // Setup function
+    function setup() {
+      createCanvas(gridWidth * cellSize, gridHeight * cellSize);
+    }
+
+    // Draw function
+    function draw() {
+      // Create a copy of the current state to compute the next generation
+      let nextState = JSON.parse(JSON.stringify(initialState));
+
+      // Update the state of each cell based on the Game of Life rules
+      for (let i = 0; i < gridWidth; i++) {
+        for (let j = 0; j < gridHeight; j++) {
+          // Count the number of live neighbors
+          let neighbors = 0;
+          for (let x = Math.max(0, i - 1); x <= Math.min(i + 1, gridWidth - 1); x++) {
+            for (let y = Math.max(0, j - 1); y <= Math.min(j + 1, gridHeight - 1); y++) {
+              if (x !== i || y !== j) {
+                neighbors += initialState[x][y];
+              }
+            }
+          }
+
+          // Apply the Game of Life rules
+          if (initialState[i][j] === 1 && (neighbors < 2 || neighbors > 3)) {
+            nextState[i][j] = 0;
+          } else if (initialState[i][j] === 0 && neighbors === 3) {
+            nextState[i][j] = 1;
+          }
+
+          // Draw the cell on the canvas
+          if (nextState[i][j] === 1) {
+            let colorIndex = Math.round(Math.random()); // Choose one of the two colors randomly
+            fill(colors[nextState[i][j]][colorIndex]);
+          } else {
+            fill(colors[nextState[i][j]]);
+          }
+          rect(i * cellSize, j * cellSize, cellSize, cellSize);
+        }
+      }
+
+      // Update the current state
+      initialState = JSON.parse(JSON.stringify(nextState));
+    }
+
+    // Run the sketch
+    new p5(null, "gameContainer"); // Replace "gameContainer" with the ID of the container element
+  </script>
+</body>
+</html>
